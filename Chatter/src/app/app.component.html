@@ -1,0 +1,25 @@
+<h1>Angular SignalR Chatter</h1>
+Name: <input type="text" [(ngModel)]="name" />
+Pwd: <input type="text" [(ngModel)]="pwd" />
+<button mat-raised-button (click)="signIn()">SignIn</button>
+<button mat-raised-button color="primary" (click)="signOut()">SignOut</button>
+
+<hr>
+
+<input type="text" matInput [(ngModel)]="message" />
+<button mat-raised-button color="primary" (click)="send()">Send</button>
+
+<hr>
+
+<table>
+  <tr>
+    <th>Timestamp</th>
+    <th>Name</th>
+    <th>Message</th>
+  </tr>
+  <tr *ngFor="let msg of messages">
+    <td style="color: blue">{{msg.timestamp | date: 'h:mm:ss a'}}</td>
+    <td><b>{{msg.name}}</b></td>
+    <td>{{msg.message}}</td>
+  </tr>
+</table>
