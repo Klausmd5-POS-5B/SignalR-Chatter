@@ -5,7 +5,7 @@ using SignalRChatter.Hub;
 namespace SignalRChatter.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class UserCTRL : ControllerBase
 {
 
@@ -13,4 +13,9 @@ public class UserCTRL : ControllerBase
     
     public UserCTRL(IHubContext<ChatHub, IChatClient> hub) => _hub = hub;
     
+    [HttpGet]
+    public List<Client> AllUsers() => UserHandler.GetAll();
+    
+    [HttpPost]
+    public void Broadcast([FromBody] string message) => _hub.Clients.All.NewMessage("Broadcast", message, DateTime.Now.ToString("o"));
 }

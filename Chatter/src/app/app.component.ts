@@ -21,6 +21,7 @@ export class AppComponent {
   HubCon: any;
 
   public messages: newMessageDTO[] = [];
+  clientCount: number = 0;
 
 
   ngOnInit() {
@@ -39,6 +40,11 @@ export class AppComponent {
       console.log("ClientConnected", name);
       this.messages.push({name: name, message: "Client connected", timestamp: new Date().toISOString()  });
     });
+
+    this.HubCon.on('clientDisconnected', (name: string) => {
+      console.log("ClientDisconnected", name);
+      this.messages.push({name: name, message: "Client disconnected", timestamp: new Date().toISOString()  });
+    });
   }
 
   private connect() {
@@ -54,18 +60,30 @@ export class AppComponent {
   }
 
   signIn() {
-    this.HubCon.invoke('signIn', this.name, this.pwd)
-      .then((x:boolean) => {
-        console.log("signIn", x);
-        this.isAdmin = x;
-      })
-      .catch((err: any) => {
-      console.log(err);
-    });
+    if(!this.isConnected) {
+      this.connect();
+    } else {
+      this.HubCon.invoke('signIn', this.name, this.pwd)
+        .then((x:boolean) => {
+          console.log("signIn", x);
+          this.isAdmin = x;
+
+          if(this.isAdmin) {
+            this.HubCon.on('nrClientsChanged', (nr: number) => {
+              console.log("NrClientsChanged", nr);
+              this.clientCount = nr;
+              this.messages.push({name: "Sörver", message: "Client count: "+nr , timestamp: new Date().toISOString()  });
+            });
+          }
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    }
   }
 
   signOut() {
-
+    this.HubCon.stop();
   }
 
   send() {

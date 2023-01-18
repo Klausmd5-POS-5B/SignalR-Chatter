@@ -3,6 +3,8 @@ Name: <input type="text" [(ngModel)]="name" />
 Pwd: <input type="text" [(ngModel)]="pwd" />
 <button mat-raised-button (click)="signIn()">SignIn</button>
 <button mat-raised-button color="primary" (click)="signOut()">SignOut</button>
+<h2 style="color: red" *ngIf="isAdmin">Admin</h2>
+<h2 style="color: red" *ngIf="isAdmin">Clients {{clientCount}}</h2>
 
 <hr>
 
